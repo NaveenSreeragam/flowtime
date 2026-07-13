@@ -66,28 +66,38 @@ export default function TemplatesPage() {
 
   const [applyingId, setApplyingId] = useState<string | null>(null);
 
-  const handleApplyPreset = async (preset: typeof PRESET_TEMPLATES[0]) => {
-    setApplyingId(preset.id);
-    for (const t of preset.tasks) {
-      await addTask({
-        title: t.title,
-        estimatedDuration: t.estimatedDuration,
-        actualDuration: 0,
-        actualStart: null,
-        actualEnd: null,
-        priority: t.priority as any,
-        fixedTime: t.fixedTime,
-        color: t.color,
-        icon: t.icon,
-        sortOrder: t.sortOrder,
-        date: selectedDate,
-        tags: [],
-        status: 'not_started',
-        plannedStart: null,
-        plannedEnd: null,
-      });
+  const handleApply = async (template: any) => {
+    setApplyingId(template.id);
+    try {
+      const isPreset = template.id.startsWith('preset-');
+      if (isPreset) {
+        for (const t of template.tasks) {
+          await addTask({
+            title: t.title,
+            estimatedDuration: t.estimatedDuration,
+            actualDuration: 0,
+            actualStart: null,
+            actualEnd: null,
+            priority: t.priority as any,
+            fixedTime: t.fixedTime,
+            color: t.color,
+            icon: t.icon,
+            sortOrder: t.sortOrder,
+            date: selectedDate,
+            tags: [],
+            status: 'not_started',
+            plannedStart: null,
+            plannedEnd: null,
+          });
+        }
+      } else {
+        await applyTemplate(template.id, selectedDate);
+      }
+    } catch (err) {
+      console.error("Error applying template:", err);
+    } finally {
+      setApplyingId(null);
     }
-    setApplyingId(null);
   };
 
   const allTemplates = [...PRESET_TEMPLATES, ...templates];
@@ -166,7 +176,7 @@ export default function TemplatesPage() {
 
               {/* Apply button */}
               <button
-                onClick={() => isPreset ? handleApplyPreset(template as any) : applyTemplate(template.id, selectedDate)}
+                onClick={() => handleApply(template)}
                 disabled={isApplying}
                 className="w-full py-2.5 rounded-xl bg-violet-600/90 hover:bg-violet-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-md shadow-violet-600/10 cursor-pointer disabled:opacity-50"
               >

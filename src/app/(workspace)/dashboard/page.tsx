@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useFlowTimeStore } from '@/store/use-flowtime-store';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -35,6 +35,7 @@ export default function DashboardPage() {
   const timelineBlocks = useFlowTimeStore((state) => state.timelineBlocks);
   const estimatedFinishTime = useFlowTimeStore((state) => state.estimatedFinishTime);
   const hasConflict = useFlowTimeStore((state) => state.hasConflict);
+  const sessions = useFlowTimeStore((state) => state.sessions);
 
   const startTask = useFlowTimeStore((state) => state.startTask);
   const pauseTask = useFlowTimeStore((state) => state.pauseTask);
@@ -59,8 +60,43 @@ export default function DashboardPage() {
   const totalFocusSec = todaysTasks.reduce((sum, t) => sum + t.actualDuration, 0);
   const formattedFocusTime = `${Math.floor(totalFocusSec / 3600)}h ${Math.floor((totalFocusSec % 3600) / 60)}m`;
 
-  // Calculate simulated break time from gap intervals
-  const [breakTimeMin, setBreakTimeMin] = useState(15); // starter break estimate
+  // Calculate dynamic break time from gaps between focus sessions
+  const breakTimeMin = useMemo(() => {
+    const todaysSessions = sessions.filter(s => 
+      s.startTime.startsWith(selectedDate)
+    ).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+    if (todaysSessions.length === 0) return 0;
+
+    let totalBreakSeconds = 0;
+    for (let i = 0; i < todaysSessions.length - 1; i++) {
+      const currentEnd = todaysSessions[i].endTime ? new Date(todaysSessions[i].endTime!) : null;
+      const nextStart = new Date(todaysSessions[i+1].startTime);
+      if (currentEnd && nextStart > currentEnd) {
+        totalBreakSeconds += Math.max(0, (nextStart.getTime() - currentEnd.getTime()) / 1000);
+      }
+    }
+
+    // Add current ongoing break if last session is closed and we are in sandbox/active mode
+    const lastSession = todaysSessions[todaysSessions.length - 1];
+    if (lastSession && lastSession.endTime && activeTaskId === null) {
+      const lastEnd = new Date(lastSession.endTime);
+      const now = new Date();
+      if (now > lastEnd && selectedDate === format(now, 'yyyy-MM-dd')) {
+        totalBreakSeconds += Math.max(0, (now.getTime() - lastEnd.getTime()) / 1000);
+      }
+    }
+
+    return Math.round(totalBreakSeconds / 60);
+  }, [sessions, selectedDate, activeTaskId]);
+
+  const isOnBreak = useMemo(() => {
+    if (activeTaskId !== null) return false;
+    const todaysSessions = sessions.filter(s => s.startTime.startsWith(selectedDate));
+    if (todaysSessions.length === 0) return false;
+    const lastSession = todaysSessions.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[todaysSessions.length - 1];
+    return lastSession && lastSession.endTime !== null;
+  }, [sessions, selectedDate, activeTaskId]);
   
   // Calculate Schedule Offset (Ahead/Behind)
   // Let's sum estimated durations of tasks completed/running vs original schedule expectation
@@ -317,12 +353,17 @@ export default function DashboardPage() {
                 className="p-12 rounded-3xl bg-zinc-950/60 border border-white/10 backdrop-blur-md glow flex flex-col items-center justify-center text-center gap-4 min-h-[360px]"
               >
                 <div className="p-4 bg-white/[0.02] border border-white/5 rounded-full text-zinc-500">
-                  <Timer className="w-12 h-12" />
+                  {isOnBreak ? <Coffee className="w-12 h-12 text-indigo-400 animate-pulse" /> : <Timer className="w-12 h-12" />}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">No active task running</h3>
+                  <h3 className="text-lg font-bold text-white">
+                    {isOnBreak ? 'You are on a break' : 'No active task running'}
+                  </h3>
                   <p className="text-zinc-500 text-sm mt-1 max-w-xs mx-auto">
-                    Go to the Today's Schedule tab or click below to choose a task and start focusing.
+                    {isOnBreak 
+                      ? 'FlowTime is automatically tracking your dynamic break session. When you are ready to focus, select a task below.' 
+                      : 'Go to the Today\'s Schedule tab or click below to choose a task and start focusing.'
+                    }
                   </p>
                 </div>
 

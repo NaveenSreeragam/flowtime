@@ -30,7 +30,9 @@ import {
   ChevronRight,
   Trash2,
   CalendarDays,
-  FileText
+  FileText,
+  Save,
+  FolderPlus
 } from 'lucide-react';
 import { format, addDays, parseISO, differenceInMinutes, parse } from 'date-fns';
 
@@ -45,6 +47,7 @@ export default function SchedulePage() {
   const addTask = useFlowTimeStore(state => state.addTask);
   const updateTask = useFlowTimeStore(state => state.updateTask);
   const reorderTasks = useFlowTimeStore(state => state.reorderTasks);
+  const addTemplate = useFlowTimeStore(state => state.addTemplate);
 
   // UI state
   const [isModalOpen, setIsOpen] = useState(false);
@@ -61,6 +64,11 @@ export default function SchedulePage() {
   const [fixedStartTime, setFixedStartTime] = useState('12:00');
   const [color, setColor] = useState('#3b82f6');
   const [icon, setIcon] = useState('CheckSquare');
+
+  // Save Template Modal state
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [templateName, setTemplateName] = useState('');
+  const [templateDescription, setTemplateDescription] = useState('');
 
   // Trigger recalculation on load
   useEffect(() => {
@@ -215,6 +223,21 @@ export default function SchedulePage() {
     setSelectedDate(format(next, 'yyyy-MM-dd'));
   };
 
+  const openSaveTemplateModal = () => {
+    setTemplateName(format(parseISO(`${selectedDate}T00:00:00`), 'MMMM d') + ' Routine');
+    setTemplateDescription('Reusable routine from ' + selectedDate);
+    setIsTemplateModalOpen(true);
+  };
+
+  const handleSaveTemplateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (todaysTasks.length === 0) return;
+    
+    const taskIds = todaysTasks.map(t => t.id);
+    await addTemplate(templateName, templateDescription, taskIds);
+    setIsTemplateModalOpen(false);
+  };
+
   // Timeline Scale Settings (1 minute = 1.2px)
   const scale = 1.2;
   const [startHour, startMin] = settings.workStartTime.split(':').map(Number);
@@ -273,12 +296,22 @@ export default function SchedulePage() {
           </button>
         </div>
 
-        <button
-          onClick={openAddModal}
-          className="flex items-center justify-center gap-1.5 bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-violet-600/10 cursor-pointer"
-        >
-          <Plus className="w-4 h-4" /> Add New Task
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={openSaveTemplateModal}
+            disabled={todaysTasks.length === 0}
+            className="flex items-center justify-center gap-1.5 bg-zinc-900 border border-white/5 hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer"
+            title={todaysTasks.length === 0 ? "Add tasks first to save as a template" : "Save this day's tasks as a reusable template"}
+          >
+            <Save className="w-4 h-4 text-violet-400" /> Save as Template
+          </button>
+          <button
+            onClick={openAddModal}
+            className="flex items-center justify-center gap-1.5 bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-violet-600/10 cursor-pointer"
+          >
+            <Plus className="w-4 h-4" /> Add New Task
+          </button>
+        </div>
       </div>
 
       {/* Main Panels Layout */}
@@ -587,6 +620,77 @@ export default function SchedulePage() {
                 </button>
               </div>
 
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Save Day as Template Modal */}
+      {isTemplateModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-zinc-950 border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-white/5 select-none">
+              <span className="text-sm font-bold text-white flex items-center gap-1.5">
+                <FolderPlus className="w-4 h-4 text-violet-400" />
+                Save Schedule as Template
+              </span>
+              <button 
+                onClick={() => setIsTemplateModalOpen(false)}
+                className="p-1 rounded-md hover:bg-white/5 text-zinc-500 hover:text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Form body */}
+            <form onSubmit={handleSaveTemplateSubmit} className="p-5 flex flex-col gap-4 text-left">
+              {/* Template Name */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-zinc-400">Template Name</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Morning Focus Block"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500"
+                />
+              </div>
+
+              {/* Template Description */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-zinc-400">Description</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Standard morning coding routine..."
+                  value={templateDescription}
+                  onChange={(e) => setTemplateDescription(e.target.value)}
+                  className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500"
+                />
+              </div>
+
+              {/* Info panel */}
+              <div className="p-3.5 rounded-xl bg-violet-500/5 border border-violet-500/10 text-xs text-zinc-400 leading-normal">
+                This will save <span className="text-white font-bold">{todaysTasks.length} tasks</span> from your current schedule as a template. You can apply it to any other day via the Templates tab.
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex justify-end gap-3 border-t border-white/5 pt-4 mt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsTemplateModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-white/5 hover:bg-white/5 text-zinc-400 hover:text-white text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-md shadow-violet-600/10 cursor-pointer"
+                >
+                  Save Template
+                </button>
+              </div>
             </form>
           </div>
         </div>
