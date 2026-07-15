@@ -11,6 +11,7 @@ import {
   BarChart3, 
   LayoutTemplate, 
   Settings as SettingsIcon,
+  Compass,
   LogOut,
   User as UserIcon,
   Search,
@@ -103,6 +104,7 @@ export default function WorkspaceLayout({
     { label: 'Today\'s Schedule', href: '/schedule', icon: Calendar },
     { label: 'Analytics', href: '/analytics', icon: BarChart3 },
     { label: 'Templates', href: '/templates', icon: LayoutTemplate },
+    { label: 'Guidance', href: '/guidance', icon: Compass },
     { label: 'Settings', href: '/settings', icon: SettingsIcon },
   ];
 

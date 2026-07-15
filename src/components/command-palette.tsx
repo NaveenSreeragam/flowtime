@@ -10,6 +10,7 @@ import {
   BarChart3, 
   LayoutTemplate, 
   Settings, 
+  Compass,
   Play, 
   Pause, 
   Check, 
@@ -46,6 +47,7 @@ export function CommandPalette() {
     { label: 'Go to Schedule', icon: Calendar, action: () => router.push('/schedule'), category: 'Navigation' },
     { label: 'Go to Analytics', icon: BarChart3, action: () => router.push('/analytics'), category: 'Navigation' },
     { label: 'Go to Templates', icon: LayoutTemplate, action: () => router.push('/templates'), category: 'Navigation' },
+    { label: 'Open Guidance', icon: Compass, action: () => router.push('/guidance'), category: 'Navigation' },
     { label: 'Go to Settings', icon: Settings, action: () => router.push('/settings'), category: 'Navigation' },
   ];
 
