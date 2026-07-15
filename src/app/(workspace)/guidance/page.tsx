@@ -62,15 +62,18 @@ export default function GuidancePage() {
   const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
-    const savedProgress = window.localStorage.getItem(storageKey);
-    if (savedProgress) {
-      try {
-        setCompletedSteps(JSON.parse(savedProgress));
-      } catch {
-        window.localStorage.removeItem(storageKey);
+    const frame = window.requestAnimationFrame(() => {
+      const savedProgress = window.localStorage.getItem(storageKey);
+      if (savedProgress) {
+        try {
+          setCompletedSteps(JSON.parse(savedProgress));
+        } catch {
+          window.localStorage.removeItem(storageKey);
+        }
       }
-    }
-    setHasLoaded(true);
+      setHasLoaded(true);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   const todayTasks = useMemo(

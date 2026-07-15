@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useFlowTimeStore } from '@/store/use-flowtime-store';
 import { CommandPalette } from '@/components/command-palette';
+import { FirstLaunchTour } from '@/components/first-launch-tour';
 import { 
   Clock, 
   Calendar, 
@@ -246,6 +247,7 @@ export default function WorkspaceLayout({
 
       {/* Global Command Palette */}
       <CommandPalette />
+      <FirstLaunchTour />
     </div>
   );
 }
