@@ -58,10 +58,10 @@ export default function LandingPage() {
   // Demo task layout calculation
   const getDemoTasks = (): MockDemoTask[] => {
     const baseTasks = [
-      { id: '1', title: '☀️ Morning Routine', duration: 45, startHour: 9, startMin: 0, fixed: false, color: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' },
-      { id: '2', title: '💻 Dev Standup', duration: 30, startHour: 9, startMin: 45, fixed: true, color: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
-      { id: '3', title: '🚀 Build FlowTime UI', duration: 90, startHour: 10, startMin: 15, fixed: false, color: 'bg-violet-500/20 text-violet-400 border-violet-500/30' },
-      { id: '4', title: '🥪 Quick Lunch', duration: 45, startHour: 11, startMin: 45, fixed: false, color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' }
+      { id: '1', title: 'Strategic planning', duration: 45, startHour: 9, startMin: 0, fixed: false, color: 'bg-cyan-500/15 text-cyan-200 border-cyan-400/25' },
+      { id: '2', title: 'Product standup', duration: 30, startHour: 9, startMin: 45, fixed: true, color: 'bg-amber-500/15 text-amber-200 border-amber-400/25' },
+      { id: '3', title: 'Deep work: launch brief', duration: 90, startHour: 10, startMin: 15, fixed: false, color: 'bg-teal-500/15 text-teal-200 border-teal-400/25' },
+      { id: '4', title: 'Reset and review', duration: 45, startHour: 11, startMin: 45, fixed: false, color: 'bg-emerald-500/15 text-emerald-200 border-emerald-400/25' }
     ];
 
     return baseTasks.map(t => {
@@ -193,16 +193,16 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="flex-1 min-h-screen bg-[#030712] relative overflow-hidden flex flex-col justify-between font-sans selection:bg-violet-500/30 selection:text-violet-300">
+    <div className="flex-1 min-h-screen bg-[#0b1218] relative overflow-hidden flex flex-col justify-between font-sans selection:bg-teal-400/30 selection:text-teal-100">
       
       {/* Background glow effects */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teal-500/10 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-600/10 blur-[120px] pointer-events-none" />
 
       {/* Main Grid Header */}
       <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between z-10 border-b border-white/5 backdrop-blur-md">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-xl shadow-lg shadow-violet-500/20">
+          <div className="p-2 bg-gradient-to-tr from-teal-600 to-cyan-500 rounded-xl shadow-lg shadow-teal-500/20">
             <Clock className="w-6 h-6 text-white" />
           </div>
           <span className="text-xl font-bold tracking-tight text-white bg-clip-text">FlowTime</span>
@@ -222,12 +222,12 @@ export default function LandingPage() {
         
         {/* Left Info Column */}
         <div className="lg:col-span-7 flex flex-col gap-6 text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-violet-500/30 bg-violet-500/10 w-fit text-xs font-semibold text-violet-400 tracking-wide uppercase">
-            <Sparkles className="w-3.5 h-3.5" /> Dynamic Daily Scheduling
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-teal-400/25 bg-teal-400/10 w-fit text-xs font-semibold text-teal-200 tracking-wide uppercase">
+            <Sparkles className="w-3.5 h-3.5" /> Adaptive workday planning
           </div>
           
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-            A schedule that <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">adapts to you</span>, not the other way around.
+            Make room for the work that <span className="bg-gradient-to-r from-teal-300 via-cyan-200 to-emerald-300 bg-clip-text text-transparent">actually matters.</span>
           </h1>
 
           <p className="text-lg text-zinc-400 max-w-xl">
@@ -238,7 +238,7 @@ export default function LandingPage() {
           <div className="mt-4 p-5 rounded-2xl bg-zinc-900/60 border border-white/5 backdrop-blur-md glow max-w-2xl relative">
             <div className="flex justify-between items-center mb-4">
               <span className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-violet-400" /> Interactive Recalculation Demo
+                <Zap className="w-4 h-4 text-teal-300" /> See your plan adapt
               </span>
               <div className="flex gap-2">
                 {demoActiveTaskState === 'idle' ? (

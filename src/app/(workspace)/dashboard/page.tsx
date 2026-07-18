@@ -144,7 +144,7 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
-            Focus Dashboard <Sparkles className="w-5 h-5 text-violet-400" />
+            Your day, in flow <Sparkles className="w-5 h-5 text-teal-300" />
           </h1>
           <p className="text-zinc-400 text-sm mt-1">
             {format(new Date(), 'EEEE, MMMM d, yyyy')} • Today's schedule focus center

@@ -101,8 +101,8 @@ export default function WorkspaceLayout({
   };
 
   const navItems = [
-    { label: 'Dashboard', href: '/dashboard', icon: Clock },
-    { label: 'Today\'s Schedule', href: '/schedule', icon: Calendar },
+    { label: 'My Day', href: '/dashboard', icon: Clock },
+    { label: 'Plan', href: '/schedule', icon: Calendar },
     { label: 'Analytics', href: '/analytics', icon: BarChart3 },
     { label: 'Templates', href: '/templates', icon: LayoutTemplate },
     { label: 'Guidance', href: '/guidance', icon: Compass },
@@ -194,7 +194,7 @@ export default function WorkspaceLayout({
         {/* Workspace Sub-header */}
         <header className="h-14 border-b border-white/5 px-6 flex items-center justify-between select-none bg-zinc-950/20">
           <div className="flex items-center gap-2 text-xs font-bold text-zinc-400">
-            <span className="uppercase tracking-wider">Workspace</span>
+            <span className="uppercase tracking-wider">Flowtime</span>
             <span className="text-zinc-600">/</span>
             <span className="text-white capitalize">{pathname?.split('/')[1] || 'Dashboard'}</span>
           </div>
