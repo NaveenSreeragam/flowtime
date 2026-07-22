@@ -238,15 +238,26 @@ export default function SchedulePage() {
     setIsTemplateModalOpen(false);
   };
 
-  // Timeline Scale Settings (1 minute = 1.2px)
-  const scale = 1.2;
-  const [startHour, startMin] = settings.workStartTime.split(':').map(Number);
-  const [endHour, endMin] = settings.workEndTime.split(':').map(Number);
-  
-  const timelineStart = new Date(currentTime);
-  timelineStart.setHours(startHour, startMin, 0, 0);
+  // Timeline Layout configs
+  const scale = 2; // pixel per minute
+  const startHour = 7;
+  const endHour = 22;
 
-  const getTimelineOffset = (blockTime: Date) => {
+  const getTimelineOffset = (timeStr: string | Date) => {
+    let blockTime: Date;
+    if (typeof timeStr === 'string') {
+      if (timeStr.includes('T')) {
+        blockTime = parseISO(timeStr);
+      } else {
+        blockTime = parse(timeStr, 'HH:mm', new Date());
+      }
+    } else {
+      blockTime = timeStr;
+    }
+
+    const timelineStart = new Date(blockTime);
+    timelineStart.setHours(startHour, 0, 0, 0);
+
     return differenceInMinutes(blockTime, timelineStart) * scale;
   };
 
@@ -271,26 +282,26 @@ export default function SchedulePage() {
       {/* Schedule Header & Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 select-none">
         <div className="flex flex-col text-left">
-          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-            Today's Schedule <CalendarDays className="w-5 h-5 text-violet-400" />
+          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            Today's Schedule <CalendarDays className="w-5 h-5 text-foreground" />
           </h1>
-          <p className="text-zinc-500 text-xs mt-0.5">Plan tasks, drag to reorder, and preview timeline flow</p>
+          <p className="text-muted-foreground text-xs mt-0.5">Plan tasks, drag to reorder, and preview timeline flow</p>
         </div>
 
         {/* Date Selector */}
-        <div className="flex items-center gap-2 bg-zinc-950/40 border border-white/5 p-1 rounded-xl">
+        <div className="flex items-center gap-2 bg-card border border-border p-1 rounded-xl">
           <button 
             onClick={() => adjustDate(-1)}
-            className="p-1.5 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-xs font-bold text-white px-2.5 min-w-[120px]">
+          <span className="text-xs font-bold text-foreground px-2.5 min-w-[120px]">
             {isTodayActive ? 'Today' : format(parseISO(`${selectedDate}T00:00:00`), 'EEE, MMM d')}
           </span>
           <button 
             onClick={() => adjustDate(1)}
-            className="p-1.5 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -300,14 +311,14 @@ export default function SchedulePage() {
           <button
             onClick={openSaveTemplateModal}
             disabled={todaysTasks.length === 0}
-            className="flex items-center justify-center gap-1.5 bg-zinc-900 border border-white/5 hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer"
+            className="flex items-center justify-center gap-1.5 bg-secondary border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed text-foreground font-semibold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer"
             title={todaysTasks.length === 0 ? "Add tasks first to save as a template" : "Save this day's tasks as a reusable template"}
           >
-            <Save className="w-4 h-4 text-violet-400" /> Save as Template
+            <Save className="w-4 h-4 text-foreground" /> Save as Template
           </button>
           <button
             onClick={openAddModal}
-            className="flex items-center justify-center gap-1.5 bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-violet-600/10 cursor-pointer"
+            className="flex items-center justify-center gap-1.5 bg-foreground text-background font-semibold text-xs px-4 py-2.5 rounded-xl hover:opacity-90 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Add New Task
           </button>
@@ -320,16 +331,16 @@ export default function SchedulePage() {
         {/* Left Column: Sortable Checklist */}
         <div className="lg:col-span-7 flex flex-col gap-4">
           <div className="flex justify-between items-center px-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">Tasks Checklist</span>
-            <span className="text-xs font-semibold text-zinc-500">{todaysTasks.length} total</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Tasks Checklist</span>
+            <span className="text-xs font-semibold text-muted-foreground">{todaysTasks.length} total</span>
           </div>
 
           {todaysTasks.length === 0 ? (
-            <div className="py-16 text-center text-zinc-500 text-sm flex flex-col items-center gap-3 border border-dashed border-white/5 rounded-3xl">
-              <Calendar className="w-10 h-10 opacity-30" />
+            <div className="py-16 text-center text-muted-foreground text-sm flex flex-col items-center gap-3 border border-dashed border-border bg-card rounded-3xl">
+              <Calendar className="w-10 h-10 opacity-30 text-foreground" />
               <div>
-                <p className="font-bold text-zinc-400">No tasks planned for today</p>
-                <p className="text-zinc-500 text-xs mt-0.5">Click "Add New Task" above to get started.</p>
+                <p className="font-bold text-foreground">No tasks planned for today</p>
+                <p className="text-muted-foreground text-xs mt-0.5">Click "Add New Task" above to get started.</p>
               </div>
             </div>
           ) : (
@@ -359,11 +370,11 @@ export default function SchedulePage() {
         {/* Right Column: Visual Timeline Scroll Grid */}
         <div className="lg:col-span-5 flex flex-col gap-4">
           <div className="flex justify-between items-center px-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 font-sans">Dynamic Timeline</span>
-            <span className="text-[10px] text-zinc-500 font-medium">Automatic Shift & Splitting Preview</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-sans">Dynamic Timeline</span>
+            <span className="text-[10px] text-muted-foreground font-medium">Automatic Shift & Splitting Preview</span>
           </div>
 
-          <div className="w-full bg-zinc-950/60 border border-white/5 rounded-3xl p-6 overflow-hidden max-h-[640px] overflow-y-auto relative timeline-gradient select-none">
+          <div className="w-full bg-card border border-border rounded-3xl p-6 overflow-hidden max-h-[640px] overflow-y-auto relative timeline-gradient select-none">
             {/* Timeline Scroll Box Container */}
             <div 
               className="relative w-full"
@@ -375,10 +386,10 @@ export default function SchedulePage() {
                 return (
                   <div 
                     key={tick.toISOString()} 
-                    className="absolute w-full flex items-center border-t border-white/[0.03]"
+                    className="absolute w-full flex items-center border-t border-border/40"
                     style={{ top: `${top}px`, height: '1px' }}
                   >
-                    <span className="absolute -left-1 text-[9px] font-mono font-bold text-zinc-600 bg-background/50 px-1 -translate-y-1/2">
+                    <span className="absolute -left-1 text-[9px] font-mono font-bold text-muted-foreground bg-card/85 px-1 -translate-y-1/2">
                       {format(tick, 'hh:mm a')}
                     </span>
                   </div>
@@ -391,37 +402,36 @@ export default function SchedulePage() {
                 const height = getTimelineHeight(block.duration);
                 const isOngoing = block.status === 'running';
 
-                // Skip rendering if block starts after working hours limit or ends before
                 if (top + height < 0) return null;
 
                 return (
                   <div
                     key={block.id}
-                    className={`absolute left-14 right-2 p-2.5 rounded-xl border flex flex-col justify-between overflow-hidden group shadow-md transition-all ${
-                      isOngoing ? 'shadow-lg shadow-violet-500/5 glow scale-[1.01]' : ''
+                    className={`absolute left-14 right-2 p-2.5 rounded-xl border flex flex-col justify-between overflow-hidden group shadow-sm transition-all ${
+                      isOngoing ? 'scale-[1.01] border-foreground' : ''
                     }`}
                     style={{
                       top: `${Math.max(0, top)}px`,
                       height: `${height}px`,
-                      backgroundColor: `${block.color}0c`, // soft backdrop
-                      borderColor: isOngoing ? '#8b5cf6' : `${block.color}30`,
-                      color: block.color
+                      backgroundColor: isOngoing ? 'rgba(0, 0, 0, 0.05)' : 'var(--secondary)',
+                      borderColor: isOngoing ? 'var(--foreground)' : 'var(--border)',
+                      color: 'var(--foreground)'
                     }}
                   >
                     <div className="flex items-start justify-between gap-1.5 min-w-0">
                       <div className="flex items-center gap-1.5 min-w-0">
-                        {block.isFixed && <Lock className="w-3 h-3 flex-shrink-0" />}
-                        <span className="text-[11px] font-bold truncate text-white">
+                        {block.isFixed && <Lock className="w-3 h-3 flex-shrink-0 text-foreground" />}
+                        <span className="text-[11px] font-bold truncate text-foreground">
                           {block.title}
                           {block.isSplit && block.splitIndex && ` (Part ${block.splitIndex}/${block.totalSplits})`}
                         </span>
                       </div>
-                      <span className="text-[9px] font-mono font-bold text-zinc-500 whitespace-nowrap">
+                      <span className="text-[9px] font-mono font-bold text-muted-foreground whitespace-nowrap">
                         {format(block.start, 'hh:mm')}
                       </span>
                     </div>
 
-                    <div className="flex items-end justify-between text-[9px] text-zinc-500 mt-1">
+                    <div className="flex items-end justify-between text-[9px] text-muted-foreground mt-1">
                       <span className="font-semibold">{block.duration}m duration</span>
                       <span>{format(block.end, 'hh:mm a')}</span>
                     </div>
@@ -439,8 +449,8 @@ export default function SchedulePage() {
                         className="absolute left-12 right-0 flex items-center z-10 pointer-events-none"
                         style={{ top: `${offset}px` }}
                       >
-                        <div className="w-2 h-2 rounded-full bg-red-500 -ml-1 shadow-md shadow-red-500/50" />
-                        <div className="flex-grow h-0.5 bg-red-500 shadow-md shadow-red-500/50" />
+                        <div className="w-2 h-2 rounded-full bg-foreground -ml-1 shadow-sm" />
+                        <div className="flex-grow h-0.5 bg-foreground/75" />
                       </div>
                     );
                   }
@@ -457,16 +467,16 @@ export default function SchedulePage() {
       {/* Add / Edit Task Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-zinc-950 border border-white/10 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto">
+          <div className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-white/5 select-none">
-              <span className="text-sm font-bold text-white flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-violet-400" />
+            <div className="flex items-center justify-between p-5 border-b border-border select-none">
+              <span className="text-sm font-bold text-foreground flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-foreground" />
                 {editingTask ? 'Edit Task Details' : 'Create Daily Task'}
               </span>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="p-1 rounded-md hover:bg-white/5 text-zinc-500 hover:text-white cursor-pointer"
+                className="p-1 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -476,47 +486,47 @@ export default function SchedulePage() {
             <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4 text-left">
               {/* Title */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-zinc-400">Task Title</label>
+                <label className="text-xs font-semibold text-muted-foreground">Task Title</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Work on FlowTime scheduler algorithm"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground"
                 />
               </div>
 
               {/* Description */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-zinc-400">Description</label>
+                <label className="text-xs font-semibold text-muted-foreground">Description</label>
                 <input
                   type="text"
                   placeholder="e.g. Implement layout calculation algorithm..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground"
                 />
               </div>
 
               {/* Notes (Markdown checklist preview) */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-zinc-400 flex items-center gap-1">
-                  <FileText className="w-3.5 h-3.5 text-zinc-500" /> Notes / Markdown
+                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
+                  <FileText className="w-3.5 h-3.5 text-muted-foreground" /> Notes / Markdown
                 </label>
                 <textarea
                   placeholder="Use markdown here (checklists, lists, code)..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
-                  className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 font-mono text-xs"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground font-mono text-xs"
                 />
               </div>
 
               {/* Estimations & Priority */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-zinc-400">Estimate (min)</label>
+                  <label className="text-xs font-semibold text-muted-foreground">Estimate (min)</label>
                   <input
                     type="number"
                     min="5"
@@ -524,16 +534,16 @@ export default function SchedulePage() {
                     required
                     value={estimatedDuration}
                     onChange={(e) => setEstimatedDuration(Number(e.target.value))}
-                    className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500 font-mono"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-foreground font-mono"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-zinc-400">Priority</label>
+                  <label className="text-xs font-semibold text-muted-foreground">Priority</label>
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as Task['priority'])}
-                    className="w-full bg-zinc-900 border border-white/5 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500"
+                    className="w-full bg-background border border-border rounded-xl px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-foreground"
                   >
                     <option value="high">🔥 High</option>
                     <option value="medium">⚡ Medium</option>
@@ -544,42 +554,42 @@ export default function SchedulePage() {
 
               {/* Tags */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-zinc-400 flex items-center gap-1">
-                  <Tag className="w-3.5 h-3.5 text-zinc-500" /> Tags (comma separated)
+                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
+                  <Tag className="w-3.5 h-3.5 text-muted-foreground" /> Tags (comma separated)
                 </label>
                 <input
                   type="text"
                   placeholder="Coding, Office, Personal"
                   value={tagsInput}
                   onChange={(e) => setTagsInput(e.target.value)}
-                  className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground"
                 />
               </div>
 
               {/* Fixed Time Toggle & inputs */}
-              <div className="flex flex-col gap-3.5 p-3.5 rounded-xl bg-white/[0.01] border border-white/5">
+              <div className="flex flex-col gap-3.5 p-3.5 rounded-xl bg-secondary/40 border border-border">
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col text-left">
-                    <span className="text-xs font-bold text-white">Fixed Time Appointment</span>
-                    <span className="text-[10px] text-zinc-500">This task cannot shift. It acts as an anchor.</span>
+                    <span className="text-xs font-bold text-foreground">Fixed Time Appointment</span>
+                    <span className="text-[10px] text-muted-foreground">This task cannot shift. It acts as an anchor.</span>
                   </div>
                   <input
                     type="checkbox"
                     checked={fixedTime}
                     onChange={(e) => setFixedTime(e.target.checked)}
-                    className="w-4 h-4 rounded border-zinc-800 text-violet-600 focus:ring-violet-500 bg-zinc-900 cursor-pointer"
+                    className="w-4 h-4 rounded border-border text-foreground focus:ring-foreground bg-background cursor-pointer"
                   />
                 </div>
 
                 {fixedTime && (
                   <div className="flex flex-col gap-1.5 animate-in slide-in-from-top-1 duration-100">
-                    <label className="text-xs font-semibold text-zinc-400">Select Start Time</label>
+                    <label className="text-xs font-semibold text-muted-foreground">Select Start Time</label>
                     <input
                       type="time"
                       required
                       value={fixedStartTime}
                       onChange={(e) => setFixedStartTime(e.target.value)}
-                      className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500 font-mono"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-foreground font-mono"
                     />
                   </div>
                 )}
@@ -587,7 +597,7 @@ export default function SchedulePage() {
 
               {/* Color Grid Selector */}
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-zinc-400">Card Color</label>
+                <label className="text-xs font-semibold text-muted-foreground">Card Color</label>
                 <div className="flex flex-wrap gap-2.5">
                   {colors.map(c => (
                     <button
@@ -595,7 +605,7 @@ export default function SchedulePage() {
                       type="button"
                       onClick={() => setColor(c)}
                       className={`w-6 h-6 rounded-full border cursor-pointer transition-all ${
-                        color === c ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-80 hover:opacity-100'
+                        color === c ? 'border-foreground scale-110 shadow-sm' : 'border-border/40 opacity-80 hover:opacity-100'
                       }`}
                       style={{ backgroundColor: c }}
                     />
@@ -604,17 +614,17 @@ export default function SchedulePage() {
               </div>
 
               {/* Action buttons */}
-              <div className="flex justify-end gap-3 border-t border-white/5 pt-4 mt-2">
+              <div className="flex justify-end gap-3 border-t border-border pt-4 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2.5 rounded-xl border border-white/5 hover:bg-white/5 text-zinc-400 hover:text-white text-xs font-semibold cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-border hover:bg-secondary text-muted-foreground hover:text-foreground text-xs font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-md shadow-violet-600/10 cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-foreground text-background text-xs font-semibold hover:opacity-90 cursor-pointer"
                 >
                   {editingTask ? 'Save Changes' : 'Create Task'}
                 </button>
@@ -628,16 +638,16 @@ export default function SchedulePage() {
       {/* Save Day as Template Modal */}
       {isTemplateModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-zinc-950 border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+          <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-100">
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-white/5 select-none">
-              <span className="text-sm font-bold text-white flex items-center gap-1.5">
-                <FolderPlus className="w-4 h-4 text-violet-400" />
+            <div className="flex items-center justify-between p-5 border-b border-border select-none">
+              <span className="text-sm font-bold text-foreground flex items-center gap-1.5">
+                <FolderPlus className="w-4 h-4 text-foreground" />
                 Save Schedule as Template
               </span>
               <button 
                 onClick={() => setIsTemplateModalOpen(false)}
-                className="p-1 rounded-md hover:bg-white/5 text-zinc-500 hover:text-white cursor-pointer"
+                className="p-1 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -647,46 +657,46 @@ export default function SchedulePage() {
             <form onSubmit={handleSaveTemplateSubmit} className="p-5 flex flex-col gap-4 text-left">
               {/* Template Name */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-zinc-400">Template Name</label>
+                <label className="text-xs font-semibold text-muted-foreground">Template Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Morning Focus Block"
                   value={templateName}
                   onChange={(e) => setTemplateName(e.target.value)}
-                  className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground"
                 />
               </div>
 
               {/* Template Description */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-zinc-400">Description</label>
+                <label className="text-xs font-semibold text-muted-foreground">Description</label>
                 <input
                   type="text"
                   placeholder="e.g. Standard morning coding routine..."
                   value={templateDescription}
                   onChange={(e) => setTemplateDescription(e.target.value)}
-                  className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground"
                 />
               </div>
 
               {/* Info panel */}
-              <div className="p-3.5 rounded-xl bg-violet-500/5 border border-violet-500/10 text-xs text-zinc-400 leading-normal">
-                This will save <span className="text-white font-bold">{todaysTasks.length} tasks</span> from your current schedule as a template. You can apply it to any other day via the Templates tab.
+              <div className="p-3.5 rounded-xl bg-secondary border border-border text-xs text-muted-foreground leading-normal">
+                This will save <span className="text-foreground font-bold">{todaysTasks.length} tasks</span> from your current schedule as a template. You can apply it to any other day via the Templates tab.
               </div>
 
               {/* Action buttons */}
-              <div className="flex justify-end gap-3 border-t border-white/5 pt-4 mt-2">
+              <div className="flex justify-end gap-3 border-t border-border pt-4 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsTemplateModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl border border-white/5 hover:bg-white/5 text-zinc-400 hover:text-white text-xs font-semibold cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-border hover:bg-secondary text-muted-foreground hover:text-foreground text-xs font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-md shadow-violet-600/10 cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-foreground text-background text-xs font-semibold hover:opacity-90 cursor-pointer"
                 >
                   Save Template
                 </button>

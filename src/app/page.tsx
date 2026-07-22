@@ -28,7 +28,6 @@ interface MockDemoTask {
   duration: number;
   timeStr: string;
   fixed: boolean;
-  color: string;
 }
 
 export default function LandingPage() {
@@ -58,10 +57,10 @@ export default function LandingPage() {
   // Demo task layout calculation
   const getDemoTasks = (): MockDemoTask[] => {
     const baseTasks = [
-      { id: '1', title: 'Strategic planning', duration: 45, startHour: 9, startMin: 0, fixed: false, color: 'bg-cyan-500/15 text-cyan-200 border-cyan-400/25' },
-      { id: '2', title: 'Product standup', duration: 30, startHour: 9, startMin: 45, fixed: true, color: 'bg-amber-500/15 text-amber-200 border-amber-400/25' },
-      { id: '3', title: 'Deep work: launch brief', duration: 90, startHour: 10, startMin: 15, fixed: false, color: 'bg-teal-500/15 text-teal-200 border-teal-400/25' },
-      { id: '4', title: 'Reset and review', duration: 45, startHour: 11, startMin: 45, fixed: false, color: 'bg-emerald-500/15 text-emerald-200 border-emerald-400/25' }
+      { id: '1', title: 'Strategic planning', duration: 45, startHour: 9, startMin: 0, fixed: false },
+      { id: '2', title: 'Product standup', duration: 30, startHour: 9, startMin: 45, fixed: true },
+      { id: '3', title: 'Deep work: launch brief', duration: 90, startHour: 10, startMin: 15, fixed: false },
+      { id: '4', title: 'Reset and review', duration: 45, startHour: 11, startMin: 45, fixed: false }
     ];
 
     return baseTasks.map(t => {
@@ -72,21 +71,17 @@ export default function LandingPage() {
       if (!t.fixed) {
         if (t.id === '1') {
           if (demoActiveTaskState === 'done') {
-            // Finished 20m early
             finalDuration = 25;
             startOffset = 0;
           }
         } else if (t.id === '3') {
-          // Coding starts early because standup finishes and lunch shifts
           startOffset = demoOffset;
         } else if (t.id === '4') {
           startOffset = demoOffset;
         }
       }
 
-      // Calculate time string
       let totalMinutes = t.startHour * 60 + t.startMin + startOffset;
-      // Fixed items do not move
       if (t.fixed) {
         totalMinutes = t.startHour * 60 + t.startMin;
       }
@@ -100,20 +95,19 @@ export default function LandingPage() {
         title: t.title,
         duration: finalDuration,
         timeStr,
-        fixed: t.fixed,
-        color: t.color
+        fixed: t.fixed
       };
     });
   };
 
   const handleDemoFinishEarly = () => {
     setDemoActiveTaskState('done');
-    setDemoOffset(-20); // shift everything else 20m early
+    setDemoOffset(-20);
   };
 
   const handleDemoFinishLate = () => {
     setDemoActiveTaskState('done');
-    setDemoOffset(30); // shift everything else 30m late
+    setDemoOffset(30);
   };
 
   const handleDemoReset = () => {
@@ -121,7 +115,6 @@ export default function LandingPage() {
     setDemoOffset(0);
   };
 
-  // Auth Handlers
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
@@ -129,7 +122,6 @@ export default function LandingPage() {
 
     try {
       if (!isSupabaseConfigured) {
-        // Mock success in local mode
         const mockUser = { id: 'mock-user-id', email: email || 'local@flowtime.app', user_metadata: { full_name: name || 'Local Explorer' } };
         useFlowTimeStore.getState().setUser(mockUser);
         router.push('/dashboard');
@@ -168,7 +160,6 @@ export default function LandingPage() {
 
   const handleGoogleLogin = async () => {
     if (!isSupabaseConfigured) {
-      // Mock Google Login
       const mockUser = { id: 'mock-google-id', email: 'google.user@flowtime.app', user_metadata: { full_name: 'Google Traveler', avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150' } };
       useFlowTimeStore.getState().setUser(mockUser);
       router.push('/dashboard');
@@ -187,71 +178,62 @@ export default function LandingPage() {
   };
 
   const handleLocalMode = () => {
-    // Directly go to dashboard
-    useFlowTimeStore.getState().setUser(null); // No registered user
+    useFlowTimeStore.getState().setUser(null); 
     router.push('/dashboard');
   };
 
   return (
-    <div className="flex-1 min-h-screen bg-[#0b1218] relative overflow-hidden flex flex-col justify-between font-sans selection:bg-teal-400/30 selection:text-teal-100">
+    <div className="flex-1 min-h-screen bg-background relative overflow-hidden flex flex-col justify-between font-sans selection:bg-foreground/10 selection:text-foreground">
       
-      {/* Background glow effects */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teal-500/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-600/10 blur-[120px] pointer-events-none" />
-
-      {/* Main Grid Header */}
-      <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between z-10 border-b border-white/5 backdrop-blur-md">
+      <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between z-10 border-b border-border bg-card/50 backdrop-blur-md">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-gradient-to-tr from-teal-600 to-cyan-500 rounded-xl shadow-lg shadow-teal-500/20">
-            <Clock className="w-6 h-6 text-white" />
+          <div className="p-2 bg-foreground rounded-xl">
+            <Clock className="w-6 h-6 text-background" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-white bg-clip-text">FlowTime</span>
+          <span className="text-xl font-bold tracking-tight text-foreground bg-clip-text">FlowTime</span>
         </div>
         <div className="flex items-center gap-4">
           <button 
             onClick={handleLocalMode}
-            className="text-sm font-medium text-zinc-400 hover:text-white transition-colors cursor-pointer px-4 py-2 rounded-lg hover:bg-white/5"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer px-4 py-2 rounded-lg hover:bg-secondary"
           >
             Launch Local Mode
           </button>
         </div>
       </header>
 
-      {/* Content Container */}
       <main className="w-full max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center py-12 z-10 flex-1">
         
-        {/* Left Info Column */}
         <div className="lg:col-span-7 flex flex-col gap-6 text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-teal-400/25 bg-teal-400/10 w-fit text-xs font-semibold text-teal-200 tracking-wide uppercase">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-secondary w-fit text-xs font-semibold text-foreground tracking-wide uppercase">
             <Sparkles className="w-3.5 h-3.5" /> Adaptive workday planning
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-none">
-            Make room for the work that <span className="bg-gradient-to-r from-teal-300 via-cyan-200 to-emerald-300 bg-clip-text text-transparent">actually matters.</span>
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground leading-none">
+            Make room for the work that <span className="underline decoration-1 decoration-foreground/30">actually matters.</span>
           </h1>
 
-          <p className="text-lg text-zinc-400 max-w-xl">
+          <p className="text-lg text-muted-foreground max-w-xl">
             FlowTime automatically shifts and splits your remaining tasks in real-time when life changes. Finish early, finish late, or take a break — your calendar recalculates instantly.
           </p>
 
-          {/* Interactive Widget Box */}
-          <div className="mt-4 p-5 rounded-2xl bg-zinc-900/60 border border-white/5 backdrop-blur-md glow max-w-2xl relative">
+          <div className="mt-4 p-5 rounded-2xl bg-card border border-border glow max-w-2xl relative">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-teal-300" /> See your plan adapt
+              <span className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <Zap className="w-4 h-4 text-foreground" /> See your plan adapt
               </span>
               <div className="flex gap-2">
                 {demoActiveTaskState === 'idle' ? (
                   <>
                     <button 
                       onClick={handleDemoFinishEarly}
-                      className="text-xs font-medium px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-all cursor-pointer"
+                      className="text-xs font-medium px-2.5 py-1.5 rounded-lg border border-border bg-secondary hover:bg-muted text-foreground transition-all cursor-pointer"
                     >
                       Finish Early (-20m)
                     </button>
                     <button 
                       onClick={handleDemoFinishLate}
-                      className="text-xs font-medium px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-all cursor-pointer"
+                      className="text-xs font-medium px-2.5 py-1.5 rounded-lg border border-border bg-secondary hover:bg-muted text-foreground transition-all cursor-pointer"
                     >
                       Finish Late (+30m)
                     </button>
@@ -259,7 +241,7 @@ export default function LandingPage() {
                 ) : (
                   <button 
                     onClick={handleDemoReset}
-                    className="text-xs font-medium px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 hover:bg-zinc-700 transition-all cursor-pointer"
+                    className="text-xs font-medium px-2.5 py-1.5 rounded-lg bg-secondary border border-border text-foreground hover:bg-muted transition-all cursor-pointer"
                   >
                     Reset Demo
                   </button>
@@ -267,7 +249,6 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Simulated Timeline Blocks */}
             <div className="flex flex-col gap-2.5">
               <AnimatePresence mode="popLayout">
                 {getDemoTasks().map((t) => (
@@ -278,20 +259,20 @@ export default function LandingPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                    className={`flex items-center justify-between p-3 rounded-xl border ${t.color} text-sm font-medium`}
+                    className="flex items-center justify-between p-3 rounded-xl border border-border bg-secondary/40 text-foreground text-sm font-medium"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-1 rounded-md bg-white/5">
-                        {t.fixed ? <Lock className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
+                      <div className="p-1 rounded-md bg-secondary border border-border">
+                        {t.fixed ? <Lock className="w-3.5 h-3.5 text-foreground" /> : <Clock className="w-3.5 h-3.5 text-foreground" />}
                       </div>
                       <div>
-                        <div>{t.title}</div>
-                        {t.fixed && <span className="text-[10px] uppercase font-bold text-amber-500/80 tracking-wider">Fixed Time</span>}
+                        <div className="text-foreground">{t.title}</div>
+                        {t.fixed && <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Fixed Time</span>}
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 text-zinc-400 text-xs">
+                    <div className="flex items-center gap-3 text-muted-foreground text-xs">
                       <span>{t.duration} min</span>
-                      <span className="font-mono bg-black/30 px-2 py-0.5 rounded text-white border border-white/5">{t.timeStr}</span>
+                      <span className="font-mono bg-card px-2 py-0.5 rounded text-foreground border border-border">{t.timeStr}</span>
                     </div>
                   </motion.div>
                 ))}
@@ -300,17 +281,15 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Right Auth Column */}
         <div className="lg:col-span-5 w-full flex justify-center">
-          <div className="w-full max-w-md p-8 rounded-3xl bg-zinc-950/80 border border-white/10 glow flex flex-col gap-6 relative z-10 backdrop-blur-lg">
+          <div className="w-full max-w-md p-8 rounded-3xl bg-card border border-border shadow-md flex flex-col gap-6 relative z-10">
             
-            {/* Auth Tab selectors */}
             {authMode !== 'forgot' && (
-              <div className="flex border-b border-white/5">
+              <div className="flex border-b border-border">
                 <button
                   onClick={() => setAuthMode('login')}
                   className={`flex-1 pb-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
-                    authMode === 'login' ? 'border-violet-500 text-white' : 'border-transparent text-zinc-500'
+                    authMode === 'login' ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground'
                   }`}
                 >
                   Sign In
@@ -318,7 +297,7 @@ export default function LandingPage() {
                 <button
                   onClick={() => setAuthMode('register')}
                   className={`flex-1 pb-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
-                    authMode === 'register' ? 'border-violet-500 text-white' : 'border-transparent text-zinc-500'
+                    authMode === 'register' ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground'
                   }`}
                 >
                   Create Account
@@ -328,12 +307,11 @@ export default function LandingPage() {
 
             {authMode === 'forgot' && (
               <div className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold text-white">Reset Password</h2>
-                <p className="text-xs text-zinc-400">Enter your email and we will send you a recovery link.</p>
+                <h2 className="text-xl font-bold text-foreground">Reset Password</h2>
+                <p className="text-xs text-muted-foreground">Enter your email and we will send you a recovery link.</p>
               </div>
             )}
 
-            {/* Error Message */}
             {authError && (
               <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-400">
                 <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
@@ -341,36 +319,35 @@ export default function LandingPage() {
               </div>
             )}
 
-            {/* Form */}
             <form onSubmit={handleAuth} className="flex flex-col gap-4 text-left">
               {authMode === 'register' && (
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-zinc-400">Full Name</label>
+                  <label className="text-xs font-semibold text-muted-foreground">Full Name</label>
                   <div className="relative">
-                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       type="text"
                       required
                       placeholder="Jane Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full bg-zinc-900 border border-white/5 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-colors"
+                      className="w-full bg-background border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground transition-colors"
                     />
                   </div>
                 </div>
               )}
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-zinc-400">Email Address</label>
+                <label className="text-xs font-semibold text-muted-foreground">Email Address</label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
                     type="email"
                     required
                     placeholder="jane@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-zinc-900 border border-white/5 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-colors"
+                    className="w-full bg-background border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground transition-colors"
                   />
                 </div>
               </div>
@@ -378,31 +355,31 @@ export default function LandingPage() {
               {authMode !== 'forgot' && (
                 <div className="flex flex-col gap-1.5">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-semibold text-zinc-400">Password</label>
+                    <label className="text-xs font-semibold text-muted-foreground">Password</label>
                     {authMode === 'login' && (
                       <button
                         type="button"
                         onClick={() => setAuthMode('forgot')}
-                        className="text-xs text-violet-400 hover:text-violet-300 font-medium cursor-pointer"
+                        className="text-xs text-muted-foreground hover:text-foreground font-medium cursor-pointer"
                       >
                         Forgot?
                       </button>
                     )}
                   </div>
                   <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full bg-zinc-900 border border-white/5 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-colors"
+                      className="w-full bg-background border border-border rounded-xl pl-10 pr-10 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-foreground transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 cursor-pointer"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -413,24 +390,22 @@ export default function LandingPage() {
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-sm font-semibold py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-violet-500/25 disabled:opacity-50 transition-all cursor-pointer mt-2"
+                className="w-full bg-foreground text-background text-sm font-semibold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-all cursor-pointer mt-2 hover:opacity-90"
               >
                 {authLoading ? 'Please wait...' : authMode === 'login' ? 'Sign In' : authMode === 'register' ? 'Sign Up' : 'Send Recovery Email'}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
 
-            {/* Social Authentication or Fallback Divider */}
             <div className="flex items-center gap-3 my-1">
-              <div className="h-px bg-white/5 flex-grow" />
-              <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Or Connect</span>
-              <div className="h-px bg-white/5 flex-grow" />
+              <div className="h-px bg-border flex-grow" />
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">Or Connect</span>
+              <div className="h-px bg-border flex-grow" />
             </div>
 
-            {/* Social logins */}
             <button
               onClick={handleGoogleLogin}
-              className="w-full py-2.5 border border-white/10 rounded-xl flex items-center justify-center gap-2.5 bg-white/[0.02] hover:bg-white/[0.06] text-sm text-white font-medium transition-all cursor-pointer"
+              className="w-full py-2.5 border border-border rounded-xl flex items-center justify-center gap-2.5 bg-secondary hover:bg-muted text-sm text-foreground font-medium transition-all cursor-pointer"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -456,21 +431,21 @@ export default function LandingPage() {
             {authMode === 'forgot' ? (
               <button
                 onClick={() => setAuthMode('login')}
-                className="text-xs text-zinc-500 hover:text-white transition-colors cursor-pointer text-center font-medium"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer text-center font-medium"
               >
                 Back to Sign In
               </button>
             ) : (
               <button
                 onClick={handleLocalMode}
-                className="text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer text-center font-semibold bg-white/5 py-2.5 rounded-xl border border-white/5"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer text-center font-semibold bg-secondary py-2.5 rounded-xl border border-border"
               >
                 ⚡ Open App in Local Sandbox Mode
               </button>
             )}
 
             {!isSupabaseConfigured && (
-              <span className="text-[10px] text-amber-500/80 leading-normal text-center bg-amber-500/5 p-2 rounded-lg border border-amber-500/10">
+              <span className="text-[10px] text-foreground leading-normal text-center bg-secondary p-2 rounded-lg border border-border">
                 ⚠️ Supabase environment variables are missing. All accounts are simulated locally for developer speed.
               </span>
             )}
@@ -479,8 +454,7 @@ export default function LandingPage() {
 
       </main>
 
-      {/* Footer */}
-      <footer className="w-full max-w-7xl mx-auto px-6 py-6 border-t border-white/5 text-center z-10 text-xs text-zinc-600">
+      <footer className="w-full max-w-7xl mx-auto px-6 py-6 border-t border-border text-center z-10 text-xs text-muted-foreground">
         &copy; {new Date().getFullYear()} FlowTime. Crafted with Next.js, Zustand, Tailwind, and Supabase. All rights reserved.
       </footer>
     </div>

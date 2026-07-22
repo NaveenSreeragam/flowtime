@@ -143,23 +143,17 @@ export default function DashboardPage() {
       {/* Title greeting */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
-            Your day, in flow <Sparkles className="w-5 h-5 text-teal-300" />
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-2">
+            Your day, in flow <Sparkles className="w-5 h-5 text-foreground" />
           </h1>
-          <p className="text-zinc-400 text-sm mt-1">
+          <p className="text-muted-foreground text-sm mt-1">
             {format(new Date(), 'EEEE, MMMM d, yyyy')} • Today's schedule focus center
           </p>
         </div>
 
         {/* Schedule offset badge */}
         {todaysTasks.length > 0 && (
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold ${
-            scheduleOffsetMin > 0 
-              ? 'bg-rose-500/10 border-rose-500/20 text-rose-400' 
-              : scheduleOffsetMin < 0 
-                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                : 'bg-zinc-500/10 border-zinc-500/20 text-zinc-400'
-          }`}>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-secondary text-xs font-semibold text-foreground">
             {scheduleOffsetMin > 0 ? (
               <>
                 <TrendingDown className="w-4 h-4" />
@@ -193,32 +187,32 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
-                className="p-8 rounded-3xl bg-zinc-950/60 border border-white/10 backdrop-blur-md glow flex flex-col items-center text-center gap-6"
+                className="p-8 rounded-3xl bg-card border border-border glow flex flex-col items-center text-center gap-6"
               >
-                <div className="w-16 h-16 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/10">
+                <div className="w-16 h-16 rounded-full bg-secondary border border-border flex items-center justify-center text-foreground shadow-sm">
                   <Award className="w-8 h-8 animate-bounce" />
                 </div>
                 
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Daily Schedule Completed!</h2>
-                  <p className="text-zinc-400 text-sm mt-2 max-w-md mx-auto">
+                  <h2 className="text-2xl font-bold text-foreground">Daily Schedule Completed!</h2>
+                  <p className="text-muted-foreground text-sm mt-2 max-w-md mx-auto">
                     Excellent work! You've finished all your tasks for today. Here is your productivity breakdown:
                   </p>
                 </div>
 
                 {/* Grid details */}
                 <div className="grid grid-cols-3 gap-4 w-full max-w-md mt-2">
-                  <div className="p-3 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col gap-1.5">
-                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Focus Session</span>
-                    <span className="text-sm font-bold text-white">{formattedFocusTime}</span>
+                  <div className="p-3 bg-secondary/50 border border-border rounded-2xl flex flex-col gap-1.5">
+                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Focus Session</span>
+                    <span className="text-sm font-bold text-foreground">{formattedFocusTime}</span>
                   </div>
-                  <div className="p-3 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col gap-1.5">
-                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Tasks Finished</span>
-                    <span className="text-sm font-bold text-white">{completedTasks.length} / {todaysTasks.length}</span>
+                  <div className="p-3 bg-secondary/50 border border-border rounded-2xl flex flex-col gap-1.5">
+                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Tasks Finished</span>
+                    <span className="text-sm font-bold text-foreground">{completedTasks.length} / {todaysTasks.length}</span>
                   </div>
-                  <div className="p-3 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col gap-1.5">
-                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Time Saved</span>
-                    <span className="text-sm font-bold text-emerald-400">
+                  <div className="p-3 bg-secondary/50 border border-border rounded-2xl flex flex-col gap-1.5">
+                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Time Saved</span>
+                    <span className="text-sm font-bold text-foreground">
                       {scheduleOffsetMin < 0 ? `${Math.abs(scheduleOffsetMin)}m` : '0m'}
                     </span>
                   </div>
@@ -231,29 +225,29 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
-                className="p-8 rounded-3xl bg-zinc-950/60 border border-white/10 backdrop-blur-md glow flex flex-col gap-6"
+                className="p-8 rounded-3xl bg-card border border-border glow flex flex-col gap-6"
               >
                 {/* Active Header */}
-                <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <div className="flex items-center justify-between border-b border-border pb-4">
                   <div className="flex items-center gap-3">
                     <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground"></span>
                     </span>
-                    <span className="text-xs font-bold text-violet-400 uppercase tracking-wider">
+                    <span className="text-xs font-bold text-foreground uppercase tracking-wider">
                       {timerStatus === 'running' ? 'Focus Session Active' : 'Session Paused'}
                     </span>
                   </div>
-                  <div className="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-[10px] font-bold text-zinc-300">
+                  <div className="px-2.5 py-1 rounded bg-secondary border border-border text-[10px] font-bold text-foreground">
                     Est: {activeTask.estimatedDuration}m
                   </div>
                 </div>
 
                 {/* Task Titles */}
                 <div className="text-left">
-                  <h2 className="text-2xl font-bold text-white">{activeTask.title}</h2>
+                  <h2 className="text-2xl font-bold text-foreground">{activeTask.title}</h2>
                   {activeTask.description && (
-                    <p className="text-zinc-400 text-sm mt-1.5">{activeTask.description}</p>
+                    <p className="text-muted-foreground text-sm mt-1.5">{activeTask.description}</p>
                   )}
                 </div>
 
@@ -266,7 +260,7 @@ export default function DashboardPage() {
                         cx="112"
                         cy="112"
                         r="96"
-                        className="stroke-zinc-800"
+                        className="stroke-muted"
                         strokeWidth="8"
                         fill="transparent"
                       />
@@ -274,7 +268,7 @@ export default function DashboardPage() {
                         cx="112"
                         cy="112"
                         r="96"
-                        className="stroke-violet-600 shadow-inner"
+                        className="stroke-foreground shadow-inner"
                         strokeWidth="8"
                         fill="transparent"
                         strokeDasharray={2 * Math.PI * 96}
@@ -285,10 +279,10 @@ export default function DashboardPage() {
                     
                     {/* Digital display overlay */}
                     <div className="absolute flex flex-col items-center">
-                      <span className="text-4xl font-mono font-bold text-white tracking-tighter">
+                      <span className="text-4xl font-mono font-bold text-foreground tracking-tighter">
                         {formatTime(elapsedSeconds)}
                       </span>
-                      <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mt-1">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">
                         Elapsed Time
                       </span>
                     </div>
@@ -296,13 +290,13 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex justify-center items-center gap-4 border-t border-white/5 pt-6">
+                <div className="flex justify-center items-center gap-4 border-t border-border pt-6">
                   
                   {/* Cancel Button */}
                   <button 
                     onClick={() => cancelTask(activeTask.id)}
                     title="Cancel task"
-                    className="p-3 rounded-2xl bg-zinc-900 border border-white/5 hover:bg-zinc-800 text-zinc-400 hover:text-rose-400 transition-all cursor-pointer"
+                    className="p-3 rounded-2xl bg-secondary border border-border hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer"
                   >
                     <XOctagon className="w-5 h-5" />
                   </button>
@@ -311,14 +305,14 @@ export default function DashboardPage() {
                   {timerStatus === 'running' ? (
                     <button 
                       onClick={() => pauseTask(activeTask.id)}
-                      className="px-8 py-4 rounded-2xl bg-white text-zinc-950 font-bold hover:bg-zinc-200 transition-all shadow-lg flex items-center gap-2 cursor-pointer"
+                      className="px-8 py-4 rounded-2xl bg-foreground text-background font-bold hover:opacity-90 transition-all shadow-md flex items-center gap-2 cursor-pointer"
                     >
                       <Pause className="w-5 h-5 fill-current" /> Pause Focus
                     </button>
                   ) : (
                     <button 
                       onClick={() => startTask(activeTask.id)}
-                      className="px-8 py-4 rounded-2xl bg-violet-600 text-white font-bold hover:bg-violet-500 transition-all shadow-lg shadow-violet-600/20 flex items-center gap-2 cursor-pointer"
+                      className="px-8 py-4 rounded-2xl bg-foreground text-background font-bold hover:opacity-90 transition-all shadow-md flex items-center gap-2 cursor-pointer"
                     >
                       <Play className="w-5 h-5 fill-current" /> Resume Focus
                     </button>
@@ -328,7 +322,7 @@ export default function DashboardPage() {
                   <button 
                     onClick={() => skipTask(activeTask.id)}
                     title="Skip task"
-                    className="p-3 rounded-2xl bg-zinc-900 border border-white/5 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-all cursor-pointer"
+                    className="p-3 rounded-2xl bg-secondary border border-border hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer"
                   >
                     <SkipForward className="w-5 h-5" />
                   </button>
@@ -337,7 +331,7 @@ export default function DashboardPage() {
                   <button 
                     onClick={() => finishTask(activeTask.id)}
                     title="Finish task"
-                    className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 text-emerald-400 transition-all cursor-pointer"
+                    className="p-3 rounded-2xl border border-foreground hover:bg-foreground hover:text-background text-foreground transition-all cursor-pointer"
                   >
                     <CheckCircle className="w-5 h-5" />
                   </button>
@@ -350,16 +344,16 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
-                className="p-12 rounded-3xl bg-zinc-950/60 border border-white/10 backdrop-blur-md glow flex flex-col items-center justify-center text-center gap-4 min-h-[360px]"
+                className="p-12 rounded-3xl bg-card border border-border glow flex flex-col items-center justify-center text-center gap-4 min-h-[360px]"
               >
-                <div className="p-4 bg-white/[0.02] border border-white/5 rounded-full text-zinc-500">
-                  {isOnBreak ? <Coffee className="w-12 h-12 text-indigo-400 animate-pulse" /> : <Timer className="w-12 h-12" />}
+                <div className="p-4 bg-secondary border border-border rounded-full text-foreground">
+                  {isOnBreak ? <Coffee className="w-12 h-12 animate-pulse" /> : <Timer className="w-12 h-12" />}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">
+                  <h3 className="text-lg font-bold text-foreground">
                     {isOnBreak ? 'You are on a break' : 'No active task running'}
                   </h3>
-                  <p className="text-zinc-500 text-sm mt-1 max-w-xs mx-auto">
+                  <p className="text-muted-foreground text-sm mt-1 max-w-xs mx-auto">
                     {isOnBreak 
                       ? 'FlowTime is automatically tracking your dynamic break session. When you are ready to focus, select a task below.' 
                       : 'Go to the Today\'s Schedule tab or click below to choose a task and start focusing.'
@@ -373,14 +367,14 @@ export default function DashboardPage() {
                       const incomplete = todaysTasks.filter(t => t.status !== 'completed' && t.status !== 'skipped');
                       if (incomplete.length > 0) startTask(incomplete[0].id);
                     }}
-                    className="mt-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-violet-600 text-white hover:bg-violet-500 transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-violet-600/15"
+                    className="mt-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-foreground text-background hover:opacity-90 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
                   >
                     <Play className="w-3.5 h-3.5 fill-current" /> Start Next Task
                   </button>
                 ) : (
                   <Link
                     href="/schedule"
-                    className="mt-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/5 text-white hover:bg-zinc-800 transition-all flex items-center gap-1"
+                    className="mt-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-secondary border border-border text-foreground hover:bg-muted transition-all flex items-center gap-1"
                   >
                     Create a Task
                   </Link>
@@ -397,52 +391,52 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 gap-4">
             
             {/* Focus widget */}
-            <div className="p-5 rounded-2xl bg-zinc-950/60 border border-white/5 flex flex-col justify-between gap-4 text-left">
-              <div className="flex items-center justify-between text-zinc-500">
+            <div className="p-5 rounded-2xl bg-card border border-border flex flex-col justify-between gap-4 text-left">
+              <div className="flex items-center justify-between text-muted-foreground">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Today's Focus</span>
-                <Clock className="w-4 h-4 text-violet-400" />
+                <Clock className="w-4 h-4 text-foreground" />
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{formattedFocusTime}</div>
-                <p className="text-[10px] text-zinc-500 mt-1">Total active work logged</p>
+                <div className="text-2xl font-bold text-foreground">{formattedFocusTime}</div>
+                <p className="text-[10px] text-muted-foreground mt-1">Total active work logged</p>
               </div>
             </div>
 
             {/* Break time widget */}
-            <div className="p-5 rounded-2xl bg-zinc-950/60 border border-white/5 flex flex-col justify-between gap-4 text-left">
-              <div className="flex items-center justify-between text-zinc-500">
+            <div className="p-5 rounded-2xl bg-card border border-border flex flex-col justify-between gap-4 text-left">
+              <div className="flex items-center justify-between text-muted-foreground">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Break Time</span>
-                <Coffee className="w-4 h-4 text-indigo-400" />
+                <Coffee className="w-4 h-4 text-foreground" />
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{breakTimeMin}m</div>
-                <p className="text-[10px] text-zinc-500 mt-1">Idle breaks & pauses</p>
+                <div className="text-2xl font-bold text-foreground">{breakTimeMin}m</div>
+                <p className="text-[10px] text-muted-foreground mt-1">Idle breaks & pauses</p>
               </div>
             </div>
 
             {/* Streak widget */}
-            <div className="p-5 rounded-2xl bg-zinc-950/60 border border-white/5 flex flex-col justify-between gap-4 text-left">
-              <div className="flex items-center justify-between text-zinc-500">
+            <div className="p-5 rounded-2xl bg-card border border-border flex flex-col justify-between gap-4 text-left">
+              <div className="flex items-center justify-between text-muted-foreground">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Active Streak</span>
-                <Flame className="w-4 h-4 text-orange-400" />
+                <Flame className="w-4 h-4 text-foreground" />
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{streakDays} Days</div>
-                <p className="text-[10px] text-zinc-500 mt-1">Consistency booster</p>
+                <div className="text-2xl font-bold text-foreground">{streakDays} Days</div>
+                <p className="text-[10px] text-muted-foreground mt-1">Consistency booster</p>
               </div>
             </div>
 
             {/* ETA finish widget */}
-            <div className="p-5 rounded-2xl bg-zinc-950/60 border border-white/5 flex flex-col justify-between gap-4 text-left">
-              <div className="flex items-center justify-between text-zinc-500">
+            <div className="p-5 rounded-2xl bg-card border border-border flex flex-col justify-between gap-4 text-left">
+              <div className="flex items-center justify-between text-muted-foreground">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Completion</span>
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-foreground" />
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">
+                <div className="text-2xl font-bold text-foreground">
                   {completedTasks.length} / {todaysTasks.length}
                 </div>
-                <p className="text-[10px] text-zinc-500 mt-1">Daily checklist rate</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Daily checklist rate</p>
               </div>
             </div>
 
@@ -450,16 +444,16 @@ export default function DashboardPage() {
 
           {/* Conflict Warning widget */}
           {hasConflict && estimatedFinishTime && (
-            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex gap-3 text-left">
-              <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div className="p-4 rounded-2xl bg-secondary border border-border flex gap-3 text-left">
+              <AlertTriangle className="w-5 h-5 text-foreground flex-shrink-0 mt-0.5" />
               <div className="flex flex-col gap-1 text-xs">
-                <span className="font-bold text-amber-400">Scheduling Conflict Detected</span>
-                <span className="text-zinc-400 leading-normal">
+                <span className="font-bold text-foreground">Scheduling Conflict Detected</span>
+                <span className="text-muted-foreground leading-normal">
                   Your estimated finish time ({format(parseISO(estimatedFinishTime), 'hh:mm a')}) exceeds your set workday end time of {settings.workEndTime}.
                 </span>
                 <Link 
                   href="/schedule" 
-                  className="text-amber-400 hover:text-amber-300 font-semibold mt-1.5 flex items-center gap-0.5"
+                  className="text-foreground hover:underline font-semibold mt-1.5 flex items-center gap-0.5"
                 >
                   Resolve in Schedule <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
@@ -468,27 +462,27 @@ export default function DashboardPage() {
           )}
 
           {/* Next Up Widget Card */}
-          <div className="p-5 rounded-2xl bg-zinc-950/60 border border-white/5 flex flex-col gap-3 text-left">
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Next Up in Timeline</span>
+          <div className="p-5 rounded-2xl bg-card border border-border flex flex-col gap-3 text-left">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Next Up in Timeline</span>
             
             {nextBlock ? (
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-white/5 bg-white/[0.01]">
+              <div className="flex items-center justify-between p-3.5 rounded-xl border border-border bg-secondary/30">
                 <div className="flex items-center gap-3">
                   <div 
-                    className="w-2.5 h-2.5 rounded-full" 
+                    className="w-2.5 h-2.5 rounded-full border border-foreground/30" 
                     style={{ backgroundColor: nextBlock.color }}
                   />
                   <div>
-                    <div className="text-sm font-semibold text-white truncate max-w-[180px]">{nextBlock.title}</div>
-                    <span className="text-[10px] text-zinc-500">Planned Start: {format(nextBlock.start, 'hh:mm a')}</span>
+                    <div className="text-sm font-semibold text-foreground truncate max-w-[180px]">{nextBlock.title}</div>
+                    <span className="text-[10px] text-muted-foreground">Planned Start: {format(nextBlock.start, 'hh:mm a')}</span>
                   </div>
                 </div>
-                <div className="text-xs font-semibold text-zinc-400">
+                <div className="text-xs font-semibold text-muted-foreground">
                   {nextBlock.duration} mins
                 </div>
               </div>
             ) : (
-              <div className="py-6 text-center text-xs text-zinc-600 border border-dashed border-white/5 rounded-xl">
+              <div className="py-6 text-center text-xs text-muted-foreground/60 border border-dashed border-border rounded-xl">
                 No subsequent tasks scheduled.
               </div>
             )}
